@@ -1,6 +1,13 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import {Home, SplashScreen, VideoList, Videos} from '../pages';
+import {
+  Carousel,
+  Home,
+  SplashScreen,
+  VideoList,
+  Videoo,
+  Videos,
+} from '../pages';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +28,12 @@ const Router = () => {
         options={optionHeader}
       />
       <Stack.Screen name="Video" component={Videos} options={optionHeader} />
+      <Stack.Screen name="Videoo" component={Videoo} options={optionHeader} />
+      <Stack.Screen
+        name="Carousel"
+        component={Carousel}
+        options={optionHeader}
+      />
     </Stack.Navigator>
   );
 };

@@ -36,16 +36,23 @@ const VideoList = ({navigation, route}) => {
             <Gap height={12} />
             <View>
               <Text style={styles.title}>Video</Text>
+
               <View style={styles.cardWrap}>
-                {videoById.map(lvideo => {
+                {videoById.map((lvideo, index) => {
                   return (
-                    <Card
-                      key={lvideo.id_video}
-                      name={lvideo.title}
-                      rating={lvideo.rating}
-                      image={{uri: lvideo.path_thumbnail}}
-                      onPress={() => navigation.navigate('Video', lvideo)}
-                    />
+                    <View
+                      key={index}
+                      style={{
+                        width: '25.00%',
+                      }}>
+                      <Card
+                        key={lvideo.id_video}
+                        name={lvideo.title}
+                        rating={lvideo.rating}
+                        image={{uri: lvideo.path_thumbnail}}
+                        onPress={() => navigation.navigate('Videoo', lvideo)}
+                      />
+                    </View>
                   );
                 })}
               </View>

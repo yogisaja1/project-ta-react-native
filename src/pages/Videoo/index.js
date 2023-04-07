@@ -14,12 +14,14 @@ import {Bg} from '../../assets';
 import {Card} from '../../components';
 import {getVideoById, setRating} from '../../redux/action';
 
-const Videos = ({navigation, route}) => {
+const Videoo = ({navigation, route}) => {
   const {title, duration, path_video, kategory_id, id_video, rating} =
     route.params;
   const {width, height} = Dimensions.get('window');
   const {videoById} = useSelector(state => state.videoReducer);
   const dispatch = useDispatch();
+  const [pause, setPause] = useState(false);
+  const [time, setTime] = useState(0);
 
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -36,14 +38,30 @@ const Videos = ({navigation, route}) => {
   videoById.map((lcategory, index) => {
     if (index % 3 === 0) {
       arrPage.push(videoById.slice(index, index + 3));
-      lcategory.length = 3;
     }
   });
 
-  const handleEnd = (video, rating, kategory_id) => {
-    const ratingInt = parseInt(rating);
-    dispatch(setRating(video, ratingInt + 1));
-    dispatch(getVideoById(kategory_id));
+  // handle end video maka lanjut ke video selanjutnya
+  const handleEnd = lvideo => {
+    //dapatkan data array selanjutnya
+    const nextVideo = videoById.find(
+      lvideo => lvideo.id_video === video.id_video + 1,
+    );
+    // jika data array selanjutnya tidak ada maka kembali ke data array pertama
+    if (nextVideo === undefined) {
+      const firstVideo = videoById.find(lvideo => lvideo.id_video === 1);
+    }
+    // jika data array selanjutnya ada maka lanjut ke data array selanjutnya
+    else {
+      setVideo({
+        id_video: nextVideo.id_video,
+        title: nextVideo.title,
+        duration: nextVideo.duration,
+        path_video: nextVideo.path_video,
+        kategory_id: nextVideo.kategory_id,
+        rating: nextVideo.rating,
+      });
+    }
   };
 
   const handleFullScreen = () => {
@@ -81,14 +99,30 @@ const Videos = ({navigation, route}) => {
             fullscreenOrientation="landscape"
             onEnterFullscreen={handleFullScreen}
             onExitFullscreen={handleFullScreen}
-            onEnd={() => handleEnd(video.id_video, video.rating, kategory_id)}
+            onEnd={() => handleEnd(video)}
             onBack={() => navigation.goBack()}
+            onProgress={
+              pause
+                ? null
+                : ({currentTime}) => {
+                    setTimeout(() => {
+                      setTime(1 + time);
+                      if (time === 300) {
+                        dispatch(setRating(video.id_video, video.rating + 1));
+                      }
+                    }, 1000);
+                  }
+            }
+            // dapatkan data full waktu video
+            onLoad={data => {
+              console.log(data);
+            }}
+            onPaused={() => setPause(true)}
             source={{
               uri: video.path_video,
             }}
           />
         </View>
-
         <ImageBackground
           source={Bg}
           style={styles.bgContainer}
@@ -99,7 +133,7 @@ const Videos = ({navigation, route}) => {
               <Text style={styles.postDuration}>{video.duration} m</Text>
               <Text style={styles.postDuration}>{video.rating} Rating</Text>
             </View>
-            <View style={{flex: 1, height: height}}>
+            <View style={{flex: 1, marginStart: 30}}>
               <Animated.FlatList
                 data={arrPage}
                 horizontal
@@ -114,9 +148,7 @@ const Videos = ({navigation, route}) => {
                         width,
                         alignItems: 'flex-start',
                         flexDirection: 'row',
-                        justifyContent:
-                          item.length < 3 ? 'flex-start' : 'space-evenly',
-                        marginStart: item.length < 3 ? 20 : 0,
+                        justifyContent: 'space-evenly',
                       }}>
                       {item.map((lvideo, index) => {
                         return (
@@ -141,7 +173,7 @@ const Videos = ({navigation, route}) => {
   );
 };
 
-export default Videos;
+export default Videoo;
 
 const styles = StyleSheet.create({
   mainPlayerView: {
@@ -171,5 +203,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FAFAFA',
     marginTop: 5,
+  },
+  backgroundVideo: {
+    flex: 1,
+    position: 'relative',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });

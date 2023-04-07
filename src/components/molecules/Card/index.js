@@ -1,9 +1,20 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Dimensions,
+} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
 import {IcStarOn} from '../../../assets';
 
-const Card = ({image, name, onPress, rating}) => {
+const {width, height} = Dimensions.get('window');
+
+const cardWidth = 0.3 * width - 80;
+
+const Card = ({image, name, onPress, rating, category}) => {
   return (
     <TouchableOpacity activeOpacity={1} onPress={onPress}>
       <View style={styles.container}>
@@ -20,8 +31,28 @@ const Card = ({image, name, onPress, rating}) => {
           </TextTicker>
           {rating && (
             <View style={styles.ratingContainer}>
-              <IcStarOn />
-              <Text style={styles.rating}>{rating}</Text>
+              <View style={styles.ratingContain}>
+                <IcStarOn />
+                <Text style={styles.rating}>{rating}</Text>
+              </View>
+              {/* 
+              jika ada props category maka akan menampilkan category
+               */}
+              {category && (
+                <View style={styles.categoryContainer}>
+                  <Text style={styles.rating}>|</Text>
+                  <View style={styles.category}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 12,
+                        fontFamily: 'Poppins-Light',
+                      }}>
+                      {category}
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
           )}
         </View>
@@ -34,7 +65,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   container: {
-    width: 200,
+    width: cardWidth,
     backgroundColor: '#000000',
     borderRadius: 3,
     shadowColor: 'black',
@@ -43,7 +74,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 10,
     overflow: 'hidden',
-    marginHorizontal: 20,
     marginVertical: 15,
   },
   contain: {
@@ -51,13 +81,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   image: {
-    width: 200,
-    height: 250,
+    width: cardWidth,
+    height: 200,
     resizeMode: 'cover',
     position: 'relative',
   },
   text: {
-    fontSize: 18,
+    fontSize: 15,
     fontFamily: 'Poppins-Medium',
     color: 'white',
     textAlign: 'center',
@@ -73,5 +103,19 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     alignContent: 'center',
+  },
+  ratingContain: {
+    flexDirection: 'row',
+    alignContent: 'center',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    marginStart: 5,
+  },
+  category: {
+    marginStart: 5,
+    paddingHorizontal: 2,
+    marginVertical: 2,
   },
 });
